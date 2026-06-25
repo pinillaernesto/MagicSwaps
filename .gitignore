@@ -1,0 +1,6 @@
+# Ignorar todo
+*
+
+# Excepto el HTML de swaps
+!card_changes.html
+!.gitignore
