@@ -6,23 +6,25 @@
 <title>MTG — Swaps Pendientes</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-body{background:#111827;color:#f3f4f6;font-family:'Segoe UI',system-ui,sans-serif;padding:28px 24px;min-height:100vh}
-h1{font-size:1.4rem;font-weight:700;color:#a78bfa;margin-bottom:6px;letter-spacing:.04em}
-.subtitle{font-size:.8rem;color:#6b7280;margin-bottom:22px}
-.filters{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:20px}
-.filters input,.filters select{background:#1f2937;border:1px solid #374151;color:#f3f4f6;border-radius:8px;padding:8px 14px;font-size:.88rem;outline:none;transition:border-color .2s}
-.filters input{min-width:210px}
+body{background:#111827;color:#f3f4f6;font-family:'Segoe UI',system-ui,sans-serif;min-height:100vh}
+.sticky-top{position:sticky;top:0;z-index:10;background:#111827;padding:10px 20px 0}
+.top-row{display:flex;align-items:center;gap:16px;flex-wrap:wrap;padding-bottom:8px}
+h1{font-size:1.1rem;font-weight:700;color:#a78bfa;letter-spacing:.04em;white-space:nowrap}
+.filters{display:flex;gap:8px;flex-wrap:wrap;align-items:center;flex:1}
+.filters input,.filters select{background:#1f2937;border:1px solid #374151;color:#f3f4f6;border-radius:7px;padding:6px 12px;font-size:.84rem;outline:none;transition:border-color .2s}
+.filters input{min-width:180px}
 .filters input:focus,.filters select:focus{border-color:#7c3aed}
 .filters select option{background:#1f2937}
-.count{font-size:.78rem;color:#6b7280;margin-bottom:14px}
+.count{font-size:.74rem;color:#6b7280;white-space:nowrap}
 .count span{color:#a78bfa;font-weight:600}
 table{width:100%;border-collapse:collapse}
-thead th{background:#1f2937;color:#9ca3af;font-size:.72rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:10px 16px;text-align:left;border-bottom:1px solid #374151}
-tbody tr{border-bottom:1px solid #1f2937;transition:background .15s}
+thead th{position:sticky;top:46px;z-index:9;background:#1f2937;color:#9ca3af;font-size:.7rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:8px 12px;text-align:left;border-bottom:none;box-shadow:0 1px 0 #1f2937}
+th.cmd-h{width:120px;min-width:100px;max-width:140px}
+tbody tr{border-bottom:1px solid #1a2234;transition:background .15s}
 tbody tr:hover{background:#1f2937}
 tbody tr.hidden{display:none}
-td.cmd{padding:14px 16px;font-size:.84rem;color:#c4b5fd;font-weight:500;white-space:nowrap;vertical-align:middle;min-width:140px}
-td.img{padding:10px 14px;vertical-align:middle;text-align:center}
+td.cmd{padding:12px 12px;font-size:.8rem;color:#c4b5fd;font-weight:500;white-space:normal;vertical-align:middle;width:120px;min-width:100px;max-width:140px}
+td.img{padding:10px 12px;vertical-align:middle;text-align:center}
 td.img img{width:174px;border-radius:10px;display:block;margin:0 auto;box-shadow:0 3px 14px rgba(0,0,0,.55);transition:transform .2s}
 td.img img:hover{transform:scale(1.05)}
 .no-img{width:174px;height:243px;background:#1f2937;border:1px dashed #374151;border-radius:10px;display:flex;align-items:center;justify-content:center;color:#6b7280;font-size:.78rem;margin:0 auto;padding:10px;text-align:center}
@@ -30,13 +32,14 @@ td.img img:hover{transform:scale(1.05)}
 </style>
 </head>
 <body>
-<h1>Swaps Pendientes</h1>
-<p class="subtitle">Solo cartas no conseguidas · se actualiza automáticamente</p>
-<div class="filters">
-  <input id="f-card" type="text" placeholder="Buscar carta...">
-  <select id="f-cmd">
-    <option value="">Todos los commanders</option>
-    <option value="aragorn, the uniter">Aragorn, the Uniter</option>
+<div class="sticky-top">
+  <div class="top-row">
+    <h1>Swaps Pendientes</h1>
+    <div class="filters">
+      <input id="f-card" type="text" placeholder="Buscar carta...">
+      <select id="f-cmd">
+        <option value="">Todos los commanders</option>
+        <option value="aragorn, the uniter">Aragorn, the Uniter</option>
 <option value="ashaya, soul of the wild">Ashaya, Soul of the Wild</option>
 <option value="dromoka, the eternal">Dromoka, the Eternal</option>
 <option value="isshin, two heavens as one">Isshin, Two Heavens as One</option>
@@ -45,11 +48,13 @@ td.img img:hover{transform:scale(1.05)}
 <option value="rocco, cabaretti caterer">Rocco, Cabaretti Caterer</option>
 <option value="tergrid, god of fright">Tergrid, God of Fright</option>
 <option value="teval, the balanced scale">Teval, the Balanced Scale</option>
-  </select>
+      </select>
+    </div>
+    <div class="count">Mostrando <span id="cnt">55</span> swap(s)</div>
+  </div>
 </div>
-<div class="count">Mostrando <span id="cnt">55</span> swap(s)</div>
 <table>
-  <thead><tr><th>Commander</th><th>Sale</th><th>Entra</th></tr></thead>
+  <thead><tr><th class="cmd-h">Commander</th><th>Sale</th><th>Entra</th></tr></thead>
   <tbody id="tbody"><tr data-commander="krenko, mob boss"     data-cards="crystal vein arena of glory"><td class="cmd">Krenko, Mob Boss</td><td class="img"><img src="https://cards.scryfall.io/normal/front/1/c/1c28ab69-1a46-45af-a331-1f52f99a9da3.jpg?1592673784" alt="Crystal Vein" title="Crystal Vein" loading="lazy"></td><td class="img"><img src="https://cards.scryfall.io/normal/front/d/d/dd148edc-9e43-41aa-bb50-f912115d3e72.jpg?1717047864" alt="Arena of Glory" title="Arena of Glory" loading="lazy"></td></tr>
 <tr data-commander="krenko, mob boss"     data-cards="connecting the dots general kreat, the boltbringer"><td class="cmd">Krenko, Mob Boss</td><td class="img"><img src="https://cards.scryfall.io/normal/front/8/e/8e02731a-8698-4b41-99c3-f0a19fc31430.jpg?1706241841" alt="Connecting the Dots" title="Connecting the Dots" loading="lazy"></td><td class="img"><img src="https://cards.scryfall.io/normal/front/2/2/226fc101-abcc-4ed4-8c0b-3677dc8d8f0a.jpg?1730485871" alt="General Kreat, the Boltbringer" title="General Kreat, the Boltbringer" loading="lazy"></td></tr>
 <tr data-commander="isshin, two heavens as one"     data-cards="wrath of god citywide bust"><td class="cmd">Isshin, Two Heavens as One</td><td class="img"><img src="https://cards.scryfall.io/normal/front/5/3/537d2b05-3f52-45d6-8fe3-26282085d0c6.jpg?1697121198" alt="Wrath of God" title="Wrath of God" loading="lazy"></td><td class="img"><img src="https://cards.scryfall.io/normal/front/3/3/33d1a51a-abf0-458c-98ae-98fcf4063fd9.jpg?1591319957" alt="Citywide Bust" title="Citywide Bust" loading="lazy"></td></tr>
