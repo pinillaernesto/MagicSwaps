@@ -138,8 +138,7 @@ applySort();
 const btnExport=document.getElementById('btn-export');
 btnExport.addEventListener('click',()=>{
   const names=[...tbody.querySelectorAll('tr:not(.hidden)')].map(tr=>tr.dataset.inLabel||'').filter(Boolean);
-  const text=names.join('
-');
+  const text=names.join('\n');
   function markCopied(){
     btnExport.textContent='✓ Copiado!';
     btnExport.classList.add('copied');
