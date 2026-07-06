@@ -9,6 +9,7 @@
 body{background:#111827;color:#f3f4f6;font-family:'Segoe UI',system-ui,sans-serif;min-height:100vh}
 .sticky-top{position:-webkit-sticky;position:sticky;top:0;z-index:10;background:#111827;padding:10px 20px 0}
 .top-row{display:flex;align-items:center;gap:16px;flex-wrap:wrap;padding-bottom:8px}
+.logo{height:36px;width:36px;object-fit:contain;flex-shrink:0}
 h1{font-size:1.1rem;font-weight:700;color:#a78bfa;letter-spacing:.04em;white-space:nowrap}
 .filters{display:flex;gap:8px;flex-wrap:wrap;align-items:center;flex:1}
 .filters input,.filters select{background:#1f2937;border:1px solid #374151;color:#f3f4f6;border-radius:7px;padding:6px 12px;font-size:.84rem;outline:none;transition:border-color .2s}
@@ -56,6 +57,7 @@ td.img img:hover{transform:scale(1.05)}
 <body>
 <div class="sticky-top">
   <div class="top-row">
+    <img class="logo" src="edh_logo.png" alt="EDH">
     <h1>Lista de Compras</h1>
     <div class="filters">
       <input id="f-card" type="text" placeholder="Buscar carta...">
