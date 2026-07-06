@@ -130,7 +130,7 @@ function buildGrid(){
   // Remove existing grid cards (keep #grid-empty)
   gridView.querySelectorAll('.grid-card').forEach(el=>el.remove());
   tbody.querySelectorAll('tr').forEach(tr=>{
-    const inImg=tr.querySelector('td.img:first-of-type img');
+    const inImg=tr.querySelector('td.img img');
     if(!inImg)return;
     const card=document.createElement('div');
     card.className='grid-card';
