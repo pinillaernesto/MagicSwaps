@@ -20,6 +20,10 @@ h1{font-size:1.1rem;font-weight:700;color:#a78bfa;letter-spacing:.04em;white-spa
 .btn-export{background:transparent;border:1px solid #4b5563;color:#9ca3af;border-radius:7px;padding:6px 14px;font-size:.82rem;cursor:pointer;transition:border-color .2s,color .2s;white-space:nowrap}
 .btn-export:hover{border-color:#a78bfa;color:#c4b5fd}
 .btn-export.copied{border-color:#34d399;color:#34d399}
+.btn-view{background:transparent;border:1px solid #4b5563;color:#9ca3af;border-radius:7px;padding:6px 12px;font-size:.82rem;cursor:pointer;transition:border-color .2s,color .2s;white-space:nowrap;display:flex;align-items:center;gap:5px}
+.btn-view:hover{border-color:#a78bfa;color:#c4b5fd}
+.btn-view.active{border-color:#7c3aed;color:#a78bfa;background:#1f2937}
+/* Table */
 table{width:100%;border-collapse:collapse}
 thead th{position:-webkit-sticky;position:sticky;top:46px;z-index:9;background:#1f2937;color:#9ca3af;font-size:.7rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:8px 12px;text-align:left;border-bottom:none;box-shadow:0 1px 0 #1f2937}
 thead th.col-img{text-align:center}
@@ -37,6 +41,16 @@ td.img img{width:174px;border-radius:10px;display:block;margin:0 auto;box-shadow
 td.img img:hover{transform:scale(1.05)}
 .no-img{width:174px;height:243px;background:#1f2937;border:1px dashed #374151;border-radius:10px;display:flex;align-items:center;justify-content:center;color:#6b7280;font-size:.78rem;margin:0 auto;padding:10px;text-align:center}
 .empty{text-align:center;color:#6b7280;padding:48px;font-size:.9rem}
+/* Grid view */
+#grid-view{display:none;padding:20px;grid-template-columns:repeat(auto-fill,minmax(174px,1fr));gap:20px}
+#grid-view.visible{display:grid}
+.grid-card{display:flex;flex-direction:column;align-items:center;gap:8px;cursor:default}
+.grid-card.hidden{display:none}
+.grid-card img{width:174px;border-radius:10px;display:block;box-shadow:0 3px 14px rgba(0,0,0,.55);transition:transform .2s,box-shadow .2s}
+.grid-card img:hover{transform:scale(1.05);box-shadow:0 6px 24px rgba(0,0,0,.75)}
+.grid-card .gc-name{font-size:.78rem;color:#c4b5fd;font-weight:500;text-align:center;line-height:1.3}
+.grid-card .gc-cmd{font-size:.68rem;color:#6b7280;text-align:center}
+#grid-empty{display:none;text-align:center;color:#6b7280;padding:48px;font-size:.9rem;grid-column:1/-1}
 </style>
 </head>
 <body>
@@ -59,10 +73,14 @@ td.img img:hover{transform:scale(1.05)}
       </select>
     </div>
     <div class="count">Mostrando <span id="cnt">23</span> swap(s)</div>
+    <button class="btn-view" id="btn-grid-view" title="Vista grid">
+      <svg width="15" height="15" viewBox="0 0 16 16" fill="currentColor"><rect x="1" y="1" width="6" height="6" rx="1"/><rect x="9" y="1" width="6" height="6" rx="1"/><rect x="1" y="9" width="6" height="6" rx="1"/><rect x="9" y="9" width="6" height="6" rx="1"/></svg>
+      Grid
+    </button>
     <button class="btn-export" id="btn-export">Exportar lista</button>
   </div>
 </div>
-<table>
+<table id="table-view">
   <thead><tr>
     <th class="cmd-h sortable" data-sort="commander">Commander</th>
     <th class="col-img sortable" data-sort="in">Comprar</th>
@@ -93,11 +111,65 @@ td.img img:hover{transform:scale(1.05)}
 <tr data-commander="teval, the balanced scale"     data-cards="welcome the dead counterspell"     data-in="counterspell"     data-in-label="Counterspell"><td class="cmd">Teval, the Balanced Scale</td><td class="img"><img src="https://cards.scryfall.io/normal/front/4/f/4f616706-ec97-4923-bb1e-11a69fbaa1f8.jpg?1751282477" alt="Counterspell" title="Counterspell" loading="lazy"></td><td class="img"><img src="https://cards.scryfall.io/normal/front/f/4/f472ea5c-191e-4b19-8ea7-f8649af91530.jpg?1743205790" alt="Welcome the Dead" title="Welcome the Dead" loading="lazy"></td></tr>
 </tbody>
 </table>
+<div id="grid-view">
+  <div id="grid-empty">No se encontraron cartas.</div>
+</div>
 <script>
 const tbody=document.getElementById('tbody');
 const fCard=document.getElementById('f-card');
 const fCmd=document.getElementById('f-cmd');
 const cnt=document.getElementById('cnt');
+const tableView=document.getElementById('table-view');
+const gridView=document.getElementById('grid-view');
+const gridEmpty=document.getElementById('grid-empty');
+const btnGridView=document.getElementById('btn-grid-view');
+let isGridView=false;
+
+// Build grid cards from table rows
+function buildGrid(){
+  // Remove existing grid cards (keep #grid-empty)
+  gridView.querySelectorAll('.grid-card').forEach(el=>el.remove());
+  tbody.querySelectorAll('tr').forEach(tr=>{
+    const inImg=tr.querySelector('td.img:first-of-type img');
+    if(!inImg)return;
+    const card=document.createElement('div');
+    card.className='grid-card';
+    card.dataset.commander=tr.dataset.commander;
+    card.dataset.cards=tr.dataset.cards;
+    card.dataset.in=tr.dataset.in;
+    card.dataset.inLabel=tr.dataset.inLabel;
+    const img=document.createElement('img');
+    img.src=inImg.src;
+    img.alt=inImg.alt;
+    img.title=inImg.title;
+    img.loading='lazy';
+    const name=document.createElement('div');
+    name.className='gc-name';
+    name.textContent=tr.dataset.inLabel||tr.dataset.in;
+    const cmd=document.createElement('div');
+    cmd.className='gc-cmd';
+    // Capitalize commander name
+    cmd.textContent=tr.dataset.commander.replace(/\b\w/g,c=>c.toUpperCase());
+    card.appendChild(img);
+    card.appendChild(name);
+    card.appendChild(cmd);
+    gridView.insertBefore(card,gridEmpty);
+  });
+}
+
+function filterGrid(){
+  const q=fCard.value.trim().toLowerCase();
+  const c=fCmd.value.toLowerCase();
+  let n=0;
+  gridView.querySelectorAll('.grid-card').forEach(card=>{
+    const ok=(!q||card.dataset.cards.includes(q))&&(!c||card.dataset.commander===c);
+    card.classList.toggle('hidden',!ok);
+    if(ok)n++;
+  });
+  cnt.textContent=n;
+  gridEmpty.style.display=n===0?'block':'none';
+}
+
 function filter(){
   const q=fCard.value.trim().toLowerCase();
   const c=fCmd.value.toLowerCase();
@@ -109,8 +181,26 @@ function filter(){
   });
   cnt.textContent=n;
 }
-fCard.addEventListener('input',filter);
-fCmd.addEventListener('change',filter);
+
+fCard.addEventListener('input',()=>{isGridView?filterGrid():filter();});
+fCmd.addEventListener('change',()=>{isGridView?filterGrid():filter();});
+
+btnGridView.addEventListener('click',()=>{
+  isGridView=!isGridView;
+  if(isGridView){
+    tableView.style.display='none';
+    buildGrid();
+    gridView.classList.add('visible');
+    btnGridView.classList.add('active');
+    filterGrid();
+  }else{
+    tableView.style.display='';
+    gridView.classList.remove('visible');
+    btnGridView.classList.remove('active');
+    filter();
+  }
+});
+
 let sortKey='commander',sortDir=1;
 function applySort(){
   const secondary=sortKey==='commander'?'in':'commander';
@@ -134,10 +224,13 @@ document.querySelectorAll('thead th.sortable').forEach(th=>{
   th.addEventListener('click',()=>sortTable(th.dataset.sort));
 });
 applySort();
+
 const btnExport=document.getElementById('btn-export');
 btnExport.addEventListener('click',()=>{
-  const names=[...tbody.querySelectorAll('tr:not(.hidden)')].map(tr=>tr.dataset.inLabel||'').filter(Boolean);
-  const text=names.join('\n');
+  const source=isGridView
+    ?[...gridView.querySelectorAll('.grid-card:not(.hidden)')].map(c=>c.dataset.inLabel||'')
+    :[...tbody.querySelectorAll('tr:not(.hidden)')].map(tr=>tr.dataset.inLabel||'');
+  const text=source.filter(Boolean).join('\n');
   function markCopied(){
     btnExport.textContent='✓ Copiado!';
     btnExport.classList.add('copied');
