@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>MTG — Lista de Compras</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#111827;color:#f3f4f6;font-family:'Segoe UI',system-ui,sans-serif;min-height:100vh}
+.sticky-top{position:-webkit-sticky;position:sticky;top:0;z-index:10;background:#111827;padding:10px 20px 0}
+.top-row{display:flex;align-items:center;gap:16px;flex-wrap:wrap;padding-bottom:8px}
+h1{font-size:1.1rem;font-weight:700;color:#a78bfa;letter-spacing:.04em;white-space:nowrap}
+.filters{display:flex;gap:8px;flex-wrap:wrap;align-items:center;flex:1}
+.filters input,.filters select{background:#1f2937;border:1px solid #374151;color:#f3f4f6;border-radius:7px;padding:6px 12px;font-size:.84rem;outline:none;transition:border-color .2s}
+.filters input{min-width:180px}
+.filters input:focus,.filters select:focus{border-color:#7c3aed}
+.filters select option{background:#1f2937}
+.count{font-size:.74rem;color:#6b7280;white-space:nowrap}
+.count span{color:#a78bfa;font-weight:600}
+.btn-export{background:transparent;border:1px solid #4b5563;color:#9ca3af;border-radius:7px;padding:6px 14px;font-size:.82rem;cursor:pointer;transition:border-color .2s,color .2s;white-space:nowrap}
+.btn-export:hover{border-color:#a78bfa;color:#c4b5fd}
+.btn-export.copied{border-color:#34d399;color:#34d399}
+table{width:100%;border-collapse:collapse}
+thead th{position:-webkit-sticky;position:sticky;top:46px;z-index:9;background:#1f2937;color:#9ca3af;font-size:.7rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:8px 12px;text-align:left;border-bottom:none;box-shadow:0 1px 0 #1f2937}
+thead th.col-img{text-align:center}
+thead th.sortable{cursor:pointer;user-select:none}
+thead th.sortable:hover{color:#c4b5fd}
+thead th.sort-asc::after{content:" ▲";font-size:.6rem;color:#a78bfa}
+thead th.sort-desc::after{content:" ▼";font-size:.6rem;color:#a78bfa}
+th.cmd-h{width:120px;min-width:100px;max-width:140px}
+tbody tr{border-bottom:1px solid #1a2234;transition:background .15s}
+tbody tr:hover{background:#1f2937}
+tbody tr.hidden{display:none}
+td.cmd{padding:12px 12px;font-size:.8rem;color:#c4b5fd;font-weight:500;white-space:normal;vertical-align:middle;width:120px;min-width:100px;max-width:140px}
+td.img{padding:10px 12px;vertical-align:middle;text-align:center}
+td.img img{width:174px;border-radius:10px;display:block;margin:0 auto;box-shadow:0 3px 14px rgba(0,0,0,.55);transition:transform .2s}
+td.img img:hover{transform:scale(1.05)}
+.no-img{width:174px;height:243px;background:#1f2937;border:1px dashed #374151;border-radius:10px;display:flex;align-items:center;justify-content:center;color:#6b7280;font-size:.78rem;margin:0 auto;padding:10px;text-align:center}
+.empty{text-align:center;color:#6b7280;padding:48px;font-size:.9rem}
+</style>
+</head>
+<body>
+<div class="sticky-top">
+  <div class="top-row">
+    <h1>Lista de Compras</h1>
+    <div class="filters">
+      <input id="f-card" type="text" placeholder="Buscar carta...">
+      <select id="f-cmd">
+        <option value="">Todos los commanders</option>
+        <option value="aragorn, the uniter">Aragorn, the Uniter</option>
+<option value="ashaya, soul of the wild">Ashaya, Soul of the Wild</option>
+<option value="dromoka, the eternal">Dromoka, the Eternal</option>
+<option value="isshin, two heavens as one">Isshin, Two Heavens as One</option>
+<option value="prosper, tome-bound">Prosper, Tome-Bound</option>
+<option value="rocco, cabaretti caterer">Rocco, Cabaretti Caterer</option>
+<option value="teval, the balanced scale">Teval, the Balanced Scale</option>
+      </select>
+    </div>
+    <div class="count">Mostrando <span id="cnt">24</span> swap(s)</div>
+    <button class="btn-export" id="btn-export">Exportar lista</button>
+  </div>
+</div>
+<table>
+  <thead><tr>
+    <th class="cmd-h sortable" data-sort="commander">Commander</th>
+    <th class="col-img sortable" data-sort="in">Comprar</th>
+    <th class="col-img">Sale</th>
+  </tr></thead>
+  <tbody id="tbody"><tr data-commander="isshin, two heavens as one"     data-cards="vault of the archangel inspiring vantage"     data-in="inspiring vantage"     data-in-label="Inspiring Vantage"><td class="cmd">Isshin, Two Heavens as One</td><td class="img"><img src="https://cards.scryfall.io/normal/front/8/5/85df6b6a-2dcf-4828-a4a8-e07d52e1fddd.jpg?1723149865" alt="Inspiring Vantage" title="Inspiring Vantage" loading="lazy"></td><td class="img"><img src="https://cards.scryfall.io/normal/front/8/f/8f203f04-bd73-4d88-bb5e-aab63507dbd1.jpg?1743207804" alt="Vault of the Archangel" title="Vault of the Archangel" loading="lazy"></td></tr>
+<tr data-commander="rocco, cabaretti caterer"     data-cards="radha, heart of keld trouble in pairs"     data-in="trouble in pairs"     data-in-label="Trouble in Pairs"><td class="cmd">Rocco, Cabaretti Caterer</td><td class="img"><img src="https://cards.scryfall.io/normal/front/0/f/0f61e93f-5f97-4c7d-b3d5-0e05242faeb3.jpg?1755372467" alt="Trouble in Pairs" title="Trouble in Pairs" loading="lazy"></td><td class="img"><img src="https://cards.scryfall.io/normal/front/2/b/2bbd37b1-49cb-4295-9a1f-fb85368a8f12.jpg?1594737431" alt="Radha, Heart of Keld" title="Radha, Heart of Keld" loading="lazy"></td></tr>
+<tr data-commander="rocco, cabaretti caterer"     data-cards="heat shimmer archivist of oghma"     data-in="archivist of oghma"     data-in-label="Archivist of Oghma"><td class="cmd">Rocco, Cabaretti Caterer</td><td class="img"><img src="https://cards.scryfall.io/normal/front/f/6/f6589e02-8c84-4069-88d1-ebcc8520cae1.jpg?1674134875" alt="Archivist of Oghma" title="Archivist of Oghma" loading="lazy"></td><td class="img"><img src="https://cards.scryfall.io/normal/front/8/6/86956f26-3761-4841-a9b5-f8205bf01f19.jpg?1599706466" alt="Heat Shimmer" title="Heat Shimmer" loading="lazy"></td></tr>
+<tr data-commander="rocco, cabaretti caterer"     data-cards="orcish lumberjack toski, bearer of secrets"     data-in="toski, bearer of secrets"     data-in-label="Toski, Bearer of Secrets"><td class="cmd">Rocco, Cabaretti Caterer</td><td class="img"><img src="https://cards.scryfall.io/normal/front/e/8/e82e61d1-488d-4627-a54c-d8496a967814.jpg?1706240948" alt="Toski, Bearer of Secrets" title="Toski, Bearer of Secrets" loading="lazy"></td><td class="img"><img src="https://cards.scryfall.io/normal/front/1/4/14fb947c-563e-4811-98de-e25bd141a6e5.jpg?1562899209" alt="Orcish Lumberjack" title="Orcish Lumberjack" loading="lazy"></td></tr>
+<tr data-commander="rocco, cabaretti caterer"     data-cards="twinflame duskwatch recruiter // krallenhorde howler"     data-in="duskwatch recruiter // krallenhorde howler"     data-in-label="Duskwatch Recruiter // Krallenhorde Howler"><td class="cmd">Rocco, Cabaretti Caterer</td><td class="img"><img src="https://cards.scryfall.io/normal/front/4/e/4ef68479-ab2e-4a60-886c-ad007b64f185.jpg?1739519198" alt="Duskwatch Recruiter // Krallenhorde Howler" title="Duskwatch Recruiter // Krallenhorde Howler" loading="lazy"></td><td class="img"><img src="https://cards.scryfall.io/normal/front/8/5/85c863ef-b266-410d-87b3-ced791f99966.jpg?1775941402" alt="Twinflame" title="Twinflame" loading="lazy"></td></tr>
+<tr data-commander="aragorn, the uniter"     data-cards="guardian augmenter kediss, emberclaw familiar"     data-in="kediss, emberclaw familiar"     data-in-label="Kediss, Emberclaw Familiar"><td class="cmd">Aragorn, the Uniter</td><td class="img"><img src="https://cards.scryfall.io/normal/front/f/6/f606ebf1-483d-4331-b16a-9fb6f591a39f.jpg?1608910296" alt="Kediss, Emberclaw Familiar" title="Kediss, Emberclaw Familiar" loading="lazy"></td><td class="img"><img src="https://cards.scryfall.io/normal/front/7/8/78ba1a2a-a2dd-4e90-900e-1421b5e3924a.jpg?1775941498" alt="Guardian Augmenter" title="Guardian Augmenter" loading="lazy"></td></tr>
+<tr data-commander="aragorn, the uniter"     data-cards="invert polarity simic charm"     data-in="simic charm"     data-in-label="Simic Charm"><td class="cmd">Aragorn, the Uniter</td><td class="img"><img src="https://cards.scryfall.io/normal/front/3/3/3384ee4e-738f-4442-bccd-4f96022b7219.jpg?1677541995" alt="Simic Charm" title="Simic Charm" loading="lazy"></td><td class="img"><img src="https://cards.scryfall.io/normal/front/d/c/dcee6a8a-c3a8-43bc-beb9-be30d03ab952.jpg?1749301973" alt="Invert Polarity" title="Invert Polarity" loading="lazy"></td></tr>
+<tr data-commander="aragorn, the uniter"     data-cards="boromir, warden of the tower katilda, dawnhart prime"     data-in="katilda, dawnhart prime"     data-in-label="Katilda, Dawnhart Prime"><td class="cmd">Aragorn, the Uniter</td><td class="img"><img src="https://cards.scryfall.io/normal/front/6/7/673cd775-d417-4652-a91d-825ad5c89e8a.jpg?1636684486" alt="Katilda, Dawnhart Prime" title="Katilda, Dawnhart Prime" loading="lazy"></td><td class="img"><img src="https://cards.scryfall.io/normal/front/f/6/f6bc3720-2892-4dda-8f30-079a1ac8e1e2.jpg?1686967669" alt="Boromir, Warden of the Tower" title="Boromir, Warden of the Tower" loading="lazy"></td></tr>
+<tr data-commander="ashaya, soul of the wild"     data-cards="embodiment of insight lotus cobra"     data-in="lotus cobra"     data-in-label="Lotus Cobra"><td class="cmd">Ashaya, Soul of the Wild</td><td class="img"><img src="https://cards.scryfall.io/normal/front/a/4/a4b759f0-901f-4be3-93fa-224609b08d48.jpg?1604199124" alt="Lotus Cobra" title="Lotus Cobra" loading="lazy"></td><td class="img"><img src="https://cards.scryfall.io/normal/front/2/f/2f3d83f7-b087-4e9b-8e98-6b9b060d0627.jpg?1604193897" alt="Embodiment of Insight" title="Embodiment of Insight" loading="lazy"></td></tr>
+<tr data-commander="ashaya, soul of the wild"     data-cards="runic armasaur collector ouphe"     data-in="collector ouphe"     data-in-label="Collector Ouphe"><td class="cmd">Ashaya, Soul of the Wild</td><td class="img"><img src="https://cards.scryfall.io/normal/front/0/8/085107a2-c1ec-473c-81d8-23e5a7197776.jpg?1562202038" alt="Collector Ouphe" title="Collector Ouphe" loading="lazy"></td><td class="img"><img src="https://cards.scryfall.io/normal/front/1/7/17913fb0-ef73-4b20-8625-b84d4e62178a.jpg?1698988399" alt="Runic Armasaur" title="Runic Armasaur" loading="lazy"></td></tr>
+<tr data-commander="ashaya, soul of the wild"     data-cards="kona, rescue beastie chord of calling"     data-in="chord of calling"     data-in-label="Chord of Calling"><td class="cmd">Ashaya, Soul of the Wild</td><td class="img"><img src="https://cards.scryfall.io/normal/front/b/1/b18fe7e0-8344-40cc-b242-83f01c6be7a6.jpg?1702429548" alt="Chord of Calling" title="Chord of Calling" loading="lazy"></td><td class="img"><img src="https://cards.scryfall.io/normal/front/6/f/6f035294-2787-4719-8520-227bf03e84e7.jpg?1726286561" alt="Kona, Rescue Beastie" title="Kona, Rescue Beastie" loading="lazy"></td></tr>
+<tr data-commander="teval, the balanced scale"     data-cards="gravecrawler sidisi, brood tyrant"     data-in="sidisi, brood tyrant"     data-in-label="Sidisi, Brood Tyrant"><td class="cmd">Teval, the Balanced Scale</td><td class="img"><img src="https://cards.scryfall.io/normal/front/6/b/6b8e44d4-db67-4bf4-97c0-ffe6a0eb2954.jpg?1783915610" alt="Sidisi, Brood Tyrant" title="Sidisi, Brood Tyrant" loading="lazy"></td><td class="img"><img src="https://cards.scryfall.io/normal/front/6/9/6987d609-ba0f-42bf-9b61-bdfb943c03b5.jpg?1783907138" alt="Gravecrawler" title="Gravecrawler" loading="lazy"></td></tr>
+<tr data-commander="teval, the balanced scale"     data-cards="deadly brew mole man, moloid master"     data-in="mole man, moloid master"     data-in-label="Mole Man, Moloid Master"><td class="cmd">Teval, the Balanced Scale</td><td class="img"><img src="https://cards.scryfall.io/normal/front/1/b/1b406cc5-75c9-430a-83a2-de0f2a8aeae6.jpg?1783902919" alt="Mole Man, Moloid Master" title="Mole Man, Moloid Master" loading="lazy"></td><td class="img"><img src="https://cards.scryfall.io/normal/front/3/e/3e5493c3-0be2-467c-82f0-3ee1ca909d0c.jpg?1783903755" alt="Deadly Brew" title="Deadly Brew" loading="lazy"></td></tr>
+<tr data-commander="teval, the balanced scale"     data-cards="grapple with the past greensleeves, maro-sorcerer"     data-in="greensleeves, maro-sorcerer"     data-in-label="Greensleeves, Maro-Sorcerer"><td class="cmd">Teval, the Balanced Scale</td><td class="img"><img src="https://cards.scryfall.io/normal/front/0/9/0969d7f3-cec5-4118-adb1-ff957eedf6ab.jpg?1783921467" alt="Greensleeves, Maro-Sorcerer" title="Greensleeves, Maro-Sorcerer" loading="lazy"></td><td class="img"><img src="https://cards.scryfall.io/normal/front/7/6/76c25c9a-245b-41c7-a75d-8061eb231389.jpg?1743206933" alt="Grapple with the Past" title="Grapple with the Past" loading="lazy"></td></tr>
+<tr data-commander="teval, the balanced scale"     data-cards="millikin death begets life"     data-in="death begets life"     data-in-label="Death Begets Life"><td class="cmd">Teval, the Balanced Scale</td><td class="img"><img src="https://cards.scryfall.io/normal/front/1/f/1faab43d-587d-44f6-9516-c8e3965bbc20.jpg?1783907324" alt="Death Begets Life" title="Death Begets Life" loading="lazy"></td><td class="img"><img src="https://cards.scryfall.io/normal/front/c/2/c2073453-4108-4039-a8c2-0f94dd7bf237.jpg?1783903738" alt="Millikin" title="Millikin" loading="lazy"></td></tr>
+<tr data-commander="teval, the balanced scale"     data-cards="phyrexian reclamation veil of summer"     data-in="veil of summer"     data-in-label="Veil of Summer"><td class="cmd">Teval, the Balanced Scale</td><td class="img"><img src="https://cards.scryfall.io/normal/front/a/a/aa686c34-1c11-469f-93c2-f9891aea521f.jpg?1650599837" alt="Veil of Summer" title="Veil of Summer" loading="lazy"></td><td class="img"><img src="https://cards.scryfall.io/normal/front/1/0/10c09b68-1d92-42da-8d4d-0d60453a6aa7.jpg?1743206573" alt="Phyrexian Reclamation" title="Phyrexian Reclamation" loading="lazy"></td></tr>
+<tr data-commander="prosper, tome-bound"     data-cards="tibalt&#x27;s trickery swiftfoot boots"     data-in="swiftfoot boots"     data-in-label="Swiftfoot Boots"><td class="cmd">Prosper, Tome-Bound</td><td class="img"><img src="https://cards.scryfall.io/normal/front/1/9/1969b151-3192-4d35-80ca-c4e180601ec8.jpg?1743207367" alt="Swiftfoot Boots" title="Swiftfoot Boots" loading="lazy"></td><td class="img"><img src="https://cards.scryfall.io/normal/front/d/d/dd921e27-3e08-438c-bec2-723226d35175.jpg?1701989318" alt="Tibalt&#x27;s Trickery" title="Tibalt&#x27;s Trickery" loading="lazy"></td></tr>
+<tr data-commander="prosper, tome-bound"     data-cards="magda, brazen outlaw imp&#x27;s mischief"     data-in="imp&#x27;s mischief"     data-in-label="Imp&#x27;s Mischief"><td class="cmd">Prosper, Tome-Bound</td><td class="img"><img src="https://cards.scryfall.io/normal/front/0/e/0eb0e8e7-266f-441e-b1cd-12b8ec3f7d71.jpg?1689997247" alt="Imp&#x27;s Mischief" title="Imp&#x27;s Mischief" loading="lazy"></td><td class="img"><img src="https://cards.scryfall.io/normal/front/0/7/079e6263-e54c-4899-a336-5315909b9322.jpg?1631049453" alt="Magda, Brazen Outlaw" title="Magda, Brazen Outlaw" loading="lazy"></td></tr>
+<tr data-commander="prosper, tome-bound"     data-cards="red elemental blast valakut exploration"     data-in="valakut exploration"     data-in-label="Valakut Exploration"><td class="cmd">Prosper, Tome-Bound</td><td class="img"><img src="https://cards.scryfall.io/normal/front/1/8/18cb7bf6-9c7c-4e62-a678-7b75862e2f64.jpg?1783929344" alt="Valakut Exploration" title="Valakut Exploration" loading="lazy"></td><td class="img"><img src="https://cards.scryfall.io/normal/front/7/0/70a45e9b-699e-425a-9f3d-267274830d3e.jpg?1562436618" alt="Red Elemental Blast" title="Red Elemental Blast" loading="lazy"></td></tr>
+<tr data-commander="prosper, tome-bound"     data-cards="there and back again you find some prisoners"     data-in="you find some prisoners"     data-in-label="You Find Some Prisoners"><td class="cmd">Prosper, Tome-Bound</td><td class="img"><img src="https://cards.scryfall.io/normal/front/0/f/0f2a95ae-feb2-42c3-99b4-9ea7a491d326.jpg?1783926469" alt="You Find Some Prisoners" title="You Find Some Prisoners" loading="lazy"></td><td class="img"><img src="https://cards.scryfall.io/normal/front/9/3/939b0bd0-24ea-45de-a2d3-37bbf6a3e6f9.jpg?1689938360" alt="There and Back Again" title="There and Back Again" loading="lazy"></td></tr>
+<tr data-commander="prosper, tome-bound"     data-cards="mizzix&#x27;s mastery talisman of indulgence"     data-in="talisman of indulgence"     data-in-label="Talisman of Indulgence"><td class="cmd">Prosper, Tome-Bound</td><td class="img"><img src="https://cards.scryfall.io/normal/front/d/a/daf69185-96cf-4523-be1d-1fe90fc63ab7.jpg?1726285334" alt="Talisman of Indulgence" title="Talisman of Indulgence" loading="lazy"></td><td class="img"><img src="https://cards.scryfall.io/normal/front/4/f/4fa2d7f2-05b3-468f-9f2c-a61b46bad88e.jpg?1712354479" alt="Mizzix&#x27;s Mastery" title="Mizzix&#x27;s Mastery" loading="lazy"></td></tr>
+<tr data-commander="dromoka, the eternal"     data-cards="invigorating surge dromoka&#x27;s command"     data-in="dromoka&#x27;s command"     data-in-label="Dromoka&#x27;s Command"><td class="cmd">Dromoka, the Eternal</td><td class="img"><img src="https://cards.scryfall.io/normal/front/4/3/43571705-6d53-4ec1-9159-c9c98771b3b6.jpg?1783917131" alt="Dromoka&#x27;s Command" title="Dromoka&#x27;s Command" loading="lazy"></td><td class="img"><img src="https://cards.scryfall.io/normal/front/5/3/531e1fc0-a3aa-4b57-87b2-79a31af5c922.jpg?1594737063" alt="Invigorating Surge" title="Invigorating Surge" loading="lazy"></td></tr>
+<tr data-commander="dromoka, the eternal"     data-cards="level up unbreakable formation"     data-in="unbreakable formation"     data-in-label="Unbreakable Formation"><td class="cmd">Dromoka, the Eternal</td><td class="img"><img src="https://cards.scryfall.io/normal/front/0/6/06e1cc7b-9319-4f6f-88ee-2e6b6d2efbc6.jpg?1783913340" alt="Unbreakable Formation" title="Unbreakable Formation" loading="lazy"></td><td class="img"><img src="https://cards.scryfall.io/normal/front/d/4/d4398907-17d2-4fad-bfa9-56925fb75834.jpg?1771344371" alt="Level Up" title="Level Up" loading="lazy"></td></tr>
+<tr data-commander="dromoka, the eternal"     data-cards="fangs of kalonia return to nature"     data-in="return to nature"     data-in-label="Return to Nature"><td class="cmd">Dromoka, the Eternal</td><td class="img"><img src="https://cards.scryfall.io/normal/front/7/e/7e99f99a-68a1-4f35-853c-794630d313fc.jpg?1783917138" alt="Return to Nature" title="Return to Nature" loading="lazy"></td><td class="img"><img src="https://cards.scryfall.io/normal/front/0/a/0ae8a77b-4001-4da2-b684-d0fab370a162.jpg?1717012453" alt="Fangs of Kalonia" title="Fangs of Kalonia" loading="lazy"></td></tr>
+</tbody>
+</table>
+<script>
+const tbody=document.getElementById('tbody');
+const fCard=document.getElementById('f-card');
+const fCmd=document.getElementById('f-cmd');
+const cnt=document.getElementById('cnt');
+function filter(){
+  const q=fCard.value.trim().toLowerCase();
+  const c=fCmd.value.toLowerCase();
+  let n=0;
+  tbody.querySelectorAll('tr').forEach(tr=>{
+    const ok=(!q||tr.dataset.cards.includes(q))&&(!c||tr.dataset.commander===c);
+    tr.classList.toggle('hidden',!ok);
+    if(ok)n++;
+  });
+  cnt.textContent=n;
+}
+fCard.addEventListener('input',filter);
+fCmd.addEventListener('change',filter);
+let sortKey='commander',sortDir=1;
+function applySort(){
+  const secondary=sortKey==='commander'?'in':'commander';
+  const rows=[...tbody.querySelectorAll('tr')];
+  rows.sort((a,b)=>{
+    const a1=(a.dataset[sortKey]||'').localeCompare(b.dataset[sortKey]||'')*sortDir;
+    if(a1!==0)return a1;
+    return (a.dataset[secondary]||'').localeCompare(b.dataset[secondary]||'');
+  });
+  rows.forEach(r=>tbody.appendChild(r));
+  document.querySelectorAll('thead th.sortable').forEach(th=>{
+    th.classList.remove('sort-asc','sort-desc');
+    if(th.dataset.sort===sortKey)th.classList.add(sortDir===1?'sort-asc':'sort-desc');
+  });
+}
+function sortTable(key){
+  if(sortKey===key){sortDir*=-1;}else{sortKey=key;sortDir=1;}
+  applySort();
+}
+document.querySelectorAll('thead th.sortable').forEach(th=>{
+  th.addEventListener('click',()=>sortTable(th.dataset.sort));
+});
+applySort();
+const btnExport=document.getElementById('btn-export');
+btnExport.addEventListener('click',()=>{
+  const names=[...tbody.querySelectorAll('tr:not(.hidden)')].map(tr=>tr.dataset.inLabel||'').filter(Boolean);
+  const text=names.join('\n');
+  function markCopied(){
+    btnExport.textContent='✓ Copiado!';
+    btnExport.classList.add('copied');
+    setTimeout(()=>{btnExport.textContent='Exportar lista';btnExport.classList.remove('copied');},2000);
+  }
+  function fallback(){
+    const ta=document.createElement('textarea');
+    ta.value=text;ta.setAttribute('readonly','');
+    ta.style.cssText='position:fixed;top:0;left:0;width:2px;height:2px;opacity:0;';
+    document.body.appendChild(ta);ta.focus();ta.select();
+    try{document.execCommand('copy');markCopied();}catch(e){}
+    document.body.removeChild(ta);
+  }
+  if(navigator.clipboard&&window.isSecureContext){
+    navigator.clipboard.writeText(text).then(markCopied).catch(fallback);
+  }else{
+    fallback();
+  }
+});
+function fixStickyTop(){
+  const h=document.querySelector('.sticky-top').getBoundingClientRect().height;
+  document.querySelectorAll('thead th').forEach(th=>th.style.top=h+'px');
+}
+window.addEventListener('resize',fixStickyTop);
+fixStickyTop();
+</script>
+</body>
+</html>
